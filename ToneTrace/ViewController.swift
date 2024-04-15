@@ -1,10 +1,3 @@
-//
-//  ViewController.swift
-//  ToneTrace
-//
-//  Created by Aleksei Kapranov on 15.04.2024.
-//
-
 import Cocoa
 import SpriteKit
 import GameplayKit
