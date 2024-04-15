@@ -3,13 +3,40 @@ import GameplayKit
 
 class GameScene: SKScene {
     var squares = [SKShapeNode]()
-    
+    var sequence = [Int]()
+    var userSequence = [Int]()
+
+
     override func didMove(to view: SKView) {
       backgroundColor = SKColor.black
       setupSquares()
+      generateSequence(length: 3)  // Генерируем последовательность из 3 миганий
+      showSequence()  // Показываем её пользователю
       
     }
     
+  func generateSequence(length: Int) {
+    sequence.removeAll()
+    for _ in 0..<length {
+      let randomIndex = Int(arc4random_uniform(UInt32(squares.count)))
+      sequence.append(randomIndex)
+      
+    }
+    print("Generated game sequence: \(sequence)")
+  }
+
+  func showSequence() {
+    var delay = 0.0
+    for index in sequence {
+      let waitAction = SKAction.wait(forDuration: delay)
+      let highlightAction = SKAction.run { [weak self] in
+        self?.highlightSquare(at: index)
+      }
+      run(SKAction.sequence([waitAction, highlightAction]))
+      delay += 1.0  // Задержка между миганиями
+    }
+  }
+
   
   func setupSquares() {
     let colors = [
@@ -42,12 +69,24 @@ class GameScene: SKScene {
   override func mouseDown(with event: NSEvent) {
     let location = event.location(in: self)
     
-    for (index, square) in squares.enumerated() {
-      if square.frame.contains(location) {
-        highlightSquare(at: index)
-
+    if userSequence.count < sequence.count {  // Проверяем, не превышает ли количество нажатий длину последовательности
+      for (index, square) in squares.enumerated() {
+        if square.frame.contains(location) {
+          highlightSquare(at: index)
+          userSequence.append(index)
+          checkCompletion()  // Проверяем, завершил ли пользователь ввод
+        }
       }
     }
   }
+  
+  func checkCompletion() {
+    if userSequence.count == sequence.count {
+      print("Generated user sequence: \(userSequence)")
+      print("User has completed entering the sequence")
+
+    }
+  }
+  
   
 }
