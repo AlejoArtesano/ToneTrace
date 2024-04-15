@@ -29,5 +29,25 @@ class GameScene: SKScene {
     }
   }
   
+  func highlightSquare(at index: Int) {
+    let highlightAction = SKAction.sequence([
+      SKAction.scale(to: 1.2, duration: 0.1),
+      SKAction.wait(forDuration: 0.1),
+      SKAction.scale(to: 1.0, duration: 0.1)
+    ])
+    squares[index].run(highlightAction)
+  }
+  
+  
+  override func mouseDown(with event: NSEvent) {
+    let location = event.location(in: self)
+    
+    for (index, square) in squares.enumerated() {
+      if square.frame.contains(location) {
+        highlightSquare(at: index)
+
+      }
+    }
+  }
   
 }
