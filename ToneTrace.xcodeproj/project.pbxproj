@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5B5A77E22BD05BD100DCF3E2 /* guitar_a2_A.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 5B5A77DF2BD05BD100DCF3E2 /* guitar_a2_A.m4a */; };
+		5B5A77E32BD05BD100DCF3E2 /* guitar_b2_B.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 5B5A77E02BD05BD100DCF3E2 /* guitar_b2_B.m4a */; };
+		5B5A77E42BD05BD100DCF3E2 /* guitar_f2-low_F.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 5B5A77E12BD05BD100DCF3E2 /* guitar_f2-low_F.m4a */; };
 		5BBA72052BCD7943006B9466 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BBA72042BCD7943006B9466 /* AppDelegate.swift */; };
 		5BBA72072BCD7943006B9466 /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 5BBA72062BCD7943006B9466 /* GameScene.sks */; };
 		5BBA720B2BCD7943006B9466 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BBA720A2BCD7943006B9466 /* GameScene.swift */; };
@@ -16,6 +19,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		5B5A77DF2BD05BD100DCF3E2 /* guitar_a2_A.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = guitar_a2_A.m4a; sourceTree = "<group>"; };
+		5B5A77E02BD05BD100DCF3E2 /* guitar_b2_B.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = guitar_b2_B.m4a; sourceTree = "<group>"; };
+		5B5A77E12BD05BD100DCF3E2 /* guitar_f2-low_F.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = "guitar_f2-low_F.m4a"; sourceTree = "<group>"; };
 		5BBA72012BCD7943006B9466 /* ToneTrace.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ToneTrace.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5BBA72042BCD7943006B9466 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		5BBA72062BCD7943006B9466 /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
@@ -37,6 +43,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5B5A77DE2BD05B8300DCF3E2 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				5B5A77DF2BD05BD100DCF3E2 /* guitar_a2_A.m4a */,
+				5B5A77E02BD05BD100DCF3E2 /* guitar_b2_B.m4a */,
+				5B5A77E12BD05BD100DCF3E2 /* guitar_f2-low_F.m4a */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 		5BBA71F82BCD7943006B9466 = {
 			isa = PBXGroup;
 			children = (
@@ -60,6 +76,7 @@
 				5BBA72062BCD7943006B9466 /* GameScene.sks */,
 				5BBA720A2BCD7943006B9466 /* GameScene.swift */,
 				5BBA720C2BCD7943006B9466 /* ViewController.swift */,
+				5B5A77DE2BD05B8300DCF3E2 /* Resources */,
 				5BBA720E2BCD794A006B9466 /* Assets.xcassets */,
 				5BBA72102BCD794A006B9466 /* Main.storyboard */,
 				5BBA72132BCD794A006B9466 /* ToneTrace.entitlements */,
@@ -125,7 +142,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5B5A77E42BD05BD100DCF3E2 /* guitar_f2-low_F.m4a in Resources */,
+				5B5A77E32BD05BD100DCF3E2 /* guitar_b2_B.m4a in Resources */,
 				5BBA72072BCD7943006B9466 /* GameScene.sks in Resources */,
+				5B5A77E22BD05BD100DCF3E2 /* guitar_a2_A.m4a in Resources */,
 				5BBA720F2BCD794A006B9466 /* Assets.xcassets in Resources */,
 				5BBA72122BCD794A006B9466 /* Main.storyboard in Resources */,
 			);
