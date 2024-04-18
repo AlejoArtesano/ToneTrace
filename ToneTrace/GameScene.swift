@@ -8,6 +8,7 @@ class GameScene: SKScene {
   var isUserInteractionAllowed = false
   
   // Элементы игрового интерфейса
+  var statusLabel: SKLabelNode!
   var squares = [SKShapeNode]()
   var sequence = [Int]()
   var userSequence = [Int]()
@@ -20,9 +21,25 @@ class GameScene: SKScene {
   // Инициализация игры, вызывается при первом показе сцены
   override func didMove(to view: SKView) {
     backgroundColor = SKColor.black
+    setupStatusLabel()
     setupButtons()
     setupAudioPlayers()
     setupSquares()
+  }
+  
+  // Настройка и инициализация statusLabel
+  func setupStatusLabel() {
+    statusLabel = SKLabelNode(fontNamed: "Arial")
+    statusLabel.fontSize = 24
+    statusLabel.fontColor = SKColor.white
+    statusLabel.position = CGPoint(x: frame.midX, y: frame.midY + 100)
+    statusLabel.text = "Welcome to the Game!"
+    addChild(statusLabel)
+  }
+
+  // Обновление текста статуса во время игры
+  func updateStatusLabel(text: String) {
+    statusLabel.text = text
   }
   
   // Настройка кнопок управления игрой
@@ -31,7 +48,7 @@ class GameScene: SKScene {
     startButton.text = "Begin"
     startButton.fontSize = 24
     startButton.fontColor = SKColor.green
-    startButton.position = CGPoint(x: frame.midX, y: frame.midY + 100)
+    startButton.position = CGPoint(x: frame.midX - 100, y: frame.midY - 150)
     startButton.name = "startButton"
     addChild(startButton)
     
@@ -39,7 +56,7 @@ class GameScene: SKScene {
     endButton.text = "End"
     endButton.fontSize = 24
     endButton.fontColor = SKColor.red
-    endButton.position = CGPoint(x: frame.midX, y: frame.midY - 100)
+    endButton.position = CGPoint(x: frame.midX + 100, y: frame.midY - 150)
     endButton.name = "endButton"
     addChild(endButton)
   }
@@ -98,6 +115,7 @@ class GameScene: SKScene {
   
   // Демонстрация сгенерированной последовательности с анимацией и звуком
   func showSequence() {
+    updateStatusLabel(text: "Watch the sequence!")
     isUserInteractionAllowed = false  // Блокируем взаимодействие на время демонстрации
     userSequence.removeAll()  // Очищаем последовательность пользователя перед новым раундом
     var delay = 0.0
@@ -109,10 +127,11 @@ class GameScene: SKScene {
         self.playSoundForSquare(index: index)
       }
       run(SKAction.sequence([waitAction, highlightAction]))
-      delay += 2  // Увеличиваем задержку, предполагая, что каждый звук длится примерно 0.5 секунды
+      delay += 2
     }
     run(SKAction.wait(forDuration: delay)) { [weak self] in
       self?.isUserInteractionAllowed = true  // Разрешаем взаимодействие после паузы
+      self?.updateStatusLabel(text: "Your turn!")
     }
   }
   
@@ -154,11 +173,22 @@ class GameScene: SKScene {
       isUserInteractionAllowed = false  // Предотвращаем взаимодействие в начале игры
       sequence.removeAll()
       userSequence.removeAll()
-      generateSequence(length: 3)
-      showSequence()
-      print("Game started")
+      
+      // Обновляем статус, сообщая о скором начале игры
+      updateStatusLabel(text: "Get ready...")
+      
+      // Добавляем задержку перед началом игры
+      let delayAction = SKAction.wait(forDuration: 2.0)  // Пауза в 2 секунды
+      let startSequenceAction = SKAction.run { [weak self] in
+        guard let self = self else { return }
+        self.generateSequence(length: 3)
+        self.showSequence()
+        self.updateStatusLabel(text: "Watch the sequence!")
+      }
+      run(SKAction.sequence([delayAction, startSequenceAction]))
     }
   }
+
   
   // Окончание игры
   func endGame() {
@@ -213,18 +243,20 @@ class GameScene: SKScene {
     if userSequence.count == sequence.count {
       if userSequence == sequence {
         print("User successfully completed the sequence")
-        // Очищаем последовательность пользователя для следующего раунда
-        userSequence.removeAll()
-        // Подготовка к следующему уровню с задержкой
-        let delayAction = SKAction.wait(forDuration: 3.0)  // Задержка в 3 секунды
+        updateStatusLabel(text: "Correct! Get ready for the next sequence...")
+        
+        userSequence.removeAll()  // Очищаем последовательность пользователя для следующего раунда
+        
+        let delayAction = SKAction.wait(forDuration: 4.0)  // Задержка в 4 секунды
         let sequenceAction = SKAction.run { [weak self] in
           guard let self = self else { return }
-          // Увеличиваем сложность
           self.generateSequence(length: self.sequence.count + 1)
+          self.updateStatusLabel(text: "Watch the sequence!")
           self.showSequence()
         }
         run(SKAction.sequence([delayAction, sequenceAction]))
       } else {
+        updateStatusLabel(text: "Game Over: Wrong Sequence!")
         print("User made an error in the sequence")
         endGame()  // Остановка игры в случае ошибки
       }
