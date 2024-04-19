@@ -8,6 +8,9 @@ class GameScene: SKScene {
   var isUserInteractionAllowed = false
   
   // Элементы игрового интерфейса
+  var score = 0
+  var level = 1
+  var scoreLabel: SKLabelNode!
   var statusLabel: SKLabelNode!
   var squares = [SKShapeNode]()
   var sequence = [Int]()
@@ -21,10 +24,26 @@ class GameScene: SKScene {
   // Инициализация игры, вызывается при первом показе сцены
   override func didMove(to view: SKView) {
     backgroundColor = SKColor.black
-    setupStatusLabel()
-    setupButtons()
+    setupInterface()
     setupAudioPlayers()
     setupSquares()
+  }
+  
+  // Настройка элементов пользовательского интерфейса: метки и кнопки.
+  func setupInterface() {
+    setupScoreLabel()
+    setupStatusLabel()
+    setupButtons()
+  }
+  
+  // Настройка и инициализация ScoreLabel
+  func setupScoreLabel() {
+    scoreLabel = SKLabelNode(fontNamed: "Arial")
+    scoreLabel.fontSize = 24
+    scoreLabel.fontColor = SKColor.white
+    scoreLabel.position = CGPoint(x: frame.midX, y: frame.midY - 150)
+    scoreLabel.text = "Score: \(score)"
+    addChild(scoreLabel)
   }
   
   // Настройка и инициализация statusLabel
@@ -37,11 +56,6 @@ class GameScene: SKScene {
     addChild(statusLabel)
   }
 
-  // Обновление текста статуса во время игры
-  func updateStatusLabel(text: String) {
-    statusLabel.text = text
-  }
-  
   // Настройка кнопок управления игрой
   func setupButtons() {
     let startButton = SKLabelNode(fontNamed: "Arial")
@@ -60,6 +74,7 @@ class GameScene: SKScene {
     endButton.name = "endButton"
     addChild(endButton)
   }
+  
   
   // Создание и настройка аудио плееров для воспроизведения звуков
   func setupAudioPlayers() {
@@ -84,6 +99,7 @@ class GameScene: SKScene {
     }
   }
   
+  
   // Настройка визуальных элементов (квадратов) для игры
   func setupSquares() {
     let colors = [
@@ -103,7 +119,128 @@ class GameScene: SKScene {
     }
   }
   
-  // Генерация случайной последовательности для игры
+  // Подсветка квадрата при активации
+  func highlightSquare(at index: Int) {
+    let highlightAction = SKAction.sequence([
+      SKAction.scale(to: 1.2, duration: 0.1),
+      SKAction.wait(forDuration: 0.1),
+      SKAction.scale(to: 1.0, duration: 0.1)
+    ])
+    squares[index].run(highlightAction)
+  }
+  
+  
+  // Запуск игры
+  func startGame() {
+    if !isGameActive {
+      isGameActive = true
+      isUserInteractionAllowed = false  // Предотвращаем взаимодействие в начале игры
+      sequence.removeAll()
+      userSequence.removeAll()
+      
+      level = 1  // Начинаем с первого уровня
+      score = 0  // Сброс счета
+      updateScoreLabel()  // Обновление отображения счета
+      
+      // Обновляем статус, сообщая о скором начале игры
+      updateStatusLabel(text: "Get ready...")
+      
+      // Добавляем задержку перед началом игры
+      let delayAction = SKAction.wait(forDuration: 2.0)  // Пауза в 2 секунды
+      let startSequenceAction = SKAction.run { [weak self] in
+        guard let self = self else { return }
+        self.generateSequence(length: 2 + self.level)  // Установка длины последовательности в зависимости от уровня
+        self.showSequence()
+        self.updateStatusLabel(text: "Watch the sequence!")
+      }
+      run(SKAction.sequence([delayAction, startSequenceAction]))
+    }
+  }
+  
+  // Окончание игры
+  func endGame() {
+    isGameActive = false
+    isUserInteractionAllowed = false
+    sequence.removeAll()
+    userSequence.removeAll()
+    removeAllActions()
+    score = 0
+    updateScoreLabel()  // Обновление отображения счета
+    level = 1
+    updateStatusLabel(text: "Game Over! Press Begin to play again.")
+    print("Game has been stopped.")
+  }
+  
+  // Обработка взаимодействия с квадратами
+  func handleSquareInteraction(at location: CGPoint) {
+    if isGameActive && isUserInteractionAllowed && userSequence.count < sequence.count {
+      for (index, square) in squares.enumerated() {
+        if square.frame.contains(location) {
+          highlightSquare(at: index)
+          userSequence.append(index)
+          playSoundForSquare(index: index)
+          checkCompletion()
+        }
+      }
+    }
+  }
+
+  // Обработка действий пользователя и обновление счёта
+  func handleUserAction(correct: Bool) {
+    if correct {
+      updateScore(by: 10) // Начисление очков за правильный ответ
+    } else {
+      updateScore(by: -5) // Списание очков за ошибку
+      updateStatusLabel(text: "Wrong sequence! Try again.")
+    }
+  }
+  
+  // Проверка завершения ввода последовательности пользователем
+  func checkCompletion() {
+    if userSequence.count == sequence.count {
+      if userSequence == sequence {
+        print("User successfully completed the sequence")
+        updateStatusLabel(text: "Correct! Get ready for the next sequence...")
+        
+        updateScore(by: 10)  // Начисление очков за правильный ответ
+        level += 1  // Переход на следующий уровень
+        
+        userSequence.removeAll()  // Очищаем последовательность пользователя для следующего раунда
+        
+        // Задержка перед генерацией новой последовательности
+        let delayAction = SKAction.wait(forDuration: 2.0)
+        let sequenceAction = SKAction.run { [weak self] in
+          guard let self = self else { return }
+          self.generateSequence(length: 2 + self.level)  // Увеличиваем сложность последовательности
+          self.showSequence()
+          self.updateStatusLabel(text: "Watch the sequence!")
+        }
+        run(SKAction.sequence([delayAction, sequenceAction]))
+      } else {
+        updateStatusLabel(text: "Incorrect! Try this level again: \(level)")
+        print("User made an error in the sequence")
+        updateScore(by: -5)  // Списание очков за ошибку
+        
+        if level > 1 {
+          level -= 1  // Понижаем уровень, если это не первый уровень
+        }
+        
+        userSequence.removeAll()  // Очищаем последовательность пользователя
+        
+        // Задержка перед повторением того же уровня
+        let delayAction = SKAction.wait(forDuration: 2.0)
+        let sequenceAction = SKAction.run { [weak self] in
+          guard let self = self else { return }
+          self.generateSequence(length: 2 + self.level)  // Генерируем ту же сложность
+          self.showSequence()
+          self.updateStatusLabel(text: "Try again! Watch the sequence!")
+        }
+        run(SKAction.sequence([delayAction, sequenceAction]))
+      }
+    }
+  }
+  
+  // Генерирование случайной последовательности для игры
   func generateSequence(length: Int) {
     sequence.removeAll()
     for _ in 0..<length {
@@ -135,69 +272,10 @@ class GameScene: SKScene {
     }
   }
   
-  // Подсветка квадрата при активации
-  func highlightSquare(at index: Int) {
-    let highlightAction = SKAction.sequence([
-      SKAction.scale(to: 1.2, duration: 0.1),
-      SKAction.wait(forDuration: 0.1),
-      SKAction.scale(to: 1.0, duration: 0.1)
-    ])
-    squares[index].run(highlightAction)
-  }
-  
-  // Обработка нажатий мыши
-  override func mouseDown(with event: NSEvent) {
-    let location = event.location(in: self)
-    let nodes = self.nodes(at: location)
-    
-    for node in nodes {
-      if let nodeName = node.name {
-        switch nodeName {
-          case "startButton":
-            if !isGameActive {
-              startGame()
-            }
-          case "endButton":
-            endGame()
-          default:
-            handleSquareInteraction(at: location)
-        }
-      }
-    }
-  }
-  
-  // Запуск игры
-  func startGame() {
-    if !isGameActive {
-      isGameActive = true
-      isUserInteractionAllowed = false  // Предотвращаем взаимодействие в начале игры
-      sequence.removeAll()
-      userSequence.removeAll()
-      
-      // Обновляем статус, сообщая о скором начале игры
-      updateStatusLabel(text: "Get ready...")
-      
-      // Добавляем задержку перед началом игры
-      let delayAction = SKAction.wait(forDuration: 2.0)  // Пауза в 2 секунды
-      let startSequenceAction = SKAction.run { [weak self] in
-        guard let self = self else { return }
-        self.generateSequence(length: 3)
-        self.showSequence()
-        self.updateStatusLabel(text: "Watch the sequence!")
-      }
-      run(SKAction.sequence([delayAction, startSequenceAction]))
-    }
-  }
-
-  
-  // Окончание игры
-  func endGame() {
-    isGameActive = false
-    isUserInteractionAllowed = false
-    sequence.removeAll()
-    userSequence.removeAll()
-    removeAllActions()
-    print("Game has been stopped.")
+  // Генерирует и демонстрирует новую последовательность игры
+  func generateAndShowSequence() {
+    generateSequence(length: 2 + level)  // 3 сигнала на первом уровне
+    showSequence()
   }
   
   // Воспроизведение звука для квадрата
@@ -224,41 +302,40 @@ class GameScene: SKScene {
     player?.play()
   }
   
-  // Обработка взаимодействия с квадратами
-  func handleSquareInteraction(at location: CGPoint) {
-    if isGameActive && isUserInteractionAllowed && userSequence.count < sequence.count {
-      for (index, square) in squares.enumerated() {
-        if square.frame.contains(location) {
-          highlightSquare(at: index)
-          userSequence.append(index)
-          playSoundForSquare(index: index)
-          checkCompletion()
-        }
-      }
-    }
+  // Изменяет счет на указанное количество очков.
+  func updateScore(by points: Int) {
+    score += points
+    scoreLabel.text = "Score: \(score)" // Обновление текста метки счета
   }
   
-  // Проверка завершения ввода последовательности пользователем
-  func checkCompletion() {
-    if userSequence.count == sequence.count {
-      if userSequence == sequence {
-        print("User successfully completed the sequence")
-        updateStatusLabel(text: "Correct! Get ready for the next sequence...")
-        
-        userSequence.removeAll()  // Очищаем последовательность пользователя для следующего раунда
-        
-        let delayAction = SKAction.wait(forDuration: 4.0)  // Задержка в 4 секунды
-        let sequenceAction = SKAction.run { [weak self] in
-          guard let self = self else { return }
-          self.generateSequence(length: self.sequence.count + 1)
-          self.updateStatusLabel(text: "Watch the sequence!")
-          self.showSequence()
+  // Обновляет текстовую метку с текущим счетом.
+  func updateScoreLabel() {
+    scoreLabel.text = "Score: \(score)"
+  }
+  
+  // Обновляет текст статуса во время игры
+  func updateStatusLabel(text: String) {
+    statusLabel.text = text
+  }
+  
+  
+  // Обработка нажатий мыши
+  override func mouseDown(with event: NSEvent) {
+    let location = event.location(in: self)
+    let nodes = self.nodes(at: location)
+    
+    for node in nodes {
+      if let nodeName = node.name {
+        switch nodeName {
+          case "startButton":
+            if !isGameActive {
+              startGame()
+            }
+          case "endButton":
+            endGame()
+          default:
+            handleSquareInteraction(at: location)
         }
-        run(SKAction.sequence([delayAction, sequenceAction]))
-      } else {
-        updateStatusLabel(text: "Game Over: Wrong Sequence!")
-        print("User made an error in the sequence")
-        endGame()  // Остановка игры в случае ошибки
       }
     }
   }
