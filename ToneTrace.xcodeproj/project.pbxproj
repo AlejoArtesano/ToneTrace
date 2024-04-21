@@ -62,6 +62,7 @@
 		5BBA71F82BCD7943006B9466 = {
 			isa = PBXGroup;
 			children = (
+				5B5A77F12BD52D0D00DCF3E2 /* README.md */,
 				5BBA72032BCD7943006B9466 /* ToneTrace */,
 				5BBA72022BCD7943006B9466 /* Products */,
 			);
@@ -88,7 +89,6 @@
 				5BBA720E2BCD794A006B9466 /* Assets.xcassets */,
 				5BBA72102BCD794A006B9466 /* Main.storyboard */,
 				5BBA72132BCD794A006B9466 /* ToneTrace.entitlements */,
-				5B5A77F12BD52D0D00DCF3E2 /* README.md */,
 			);
 			path = ToneTrace;
 			sourceTree = "<group>";
