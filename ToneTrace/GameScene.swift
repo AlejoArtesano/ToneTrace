@@ -4,16 +4,14 @@ import AVFoundation
 
 class GameScene: SKScene {
   var audioManager = AudioManager()
+  var interfaceManager: InterfaceManager!
   
   // Флаги состояния игры
   var isGameActive = false
   var isUserInteractionAllowed = false
   
   // Элементы игрового интерфейса
-  var score = 0
   var level = 1
-  var scoreLabel: SKLabelNode!
-  var statusLabel: SKLabelNode!
   var squares = [SKShapeNode]()
   var sequence = [Int]()
   var userSequence = [Int]()
@@ -22,37 +20,11 @@ class GameScene: SKScene {
   override func didMove(to view: SKView) {
     backgroundColor = SKColor.black
     audioManager.setupAudioPlayers()
-    setupInterface()
+    interfaceManager = InterfaceManager(scene: self)  // Создаем InterfaceManager и передаем текущую сцену
     setupSquares()
-  }
-  
-  // Настройка элементов пользовательского интерфейса: метки и кнопки.
-  func setupInterface() {
-    setupScoreLabel()
-    setupStatusLabel()
     setupButtons()
   }
   
-  // Настройка и инициализация ScoreLabel
-  func setupScoreLabel() {
-    scoreLabel = SKLabelNode(fontNamed: "Arial")
-    scoreLabel.fontSize = 24
-    scoreLabel.fontColor = SKColor.white
-    scoreLabel.position = CGPoint(x: frame.midX, y: frame.midY - 150)
-    scoreLabel.text = "Score: \(score)"
-    addChild(scoreLabel)
-  }
-  
-  // Настройка и инициализация statusLabel
-  func setupStatusLabel() {
-    statusLabel = SKLabelNode(fontNamed: "Arial")
-    statusLabel.fontSize = 24
-    statusLabel.fontColor = SKColor.white
-    statusLabel.position = CGPoint(x: frame.midX, y: frame.midY + 100)
-    statusLabel.text = "Welcome to the Game!"
-    addChild(statusLabel)
-  }
-
   // Настройка кнопок управления игрой
   func setupButtons() {
     let startButton = SKLabelNode(fontNamed: "Arial")
@@ -71,7 +43,6 @@ class GameScene: SKScene {
     endButton.name = "endButton"
     addChild(endButton)
   }
-  
   
   // Настройка визуальных элементов (квадратов) для игры
   func setupSquares() {
@@ -102,7 +73,6 @@ class GameScene: SKScene {
     squares[index].run(highlightAction)
   }
   
-  
   // Запуск игры
   func startGame() {
     if !isGameActive {
@@ -110,13 +80,9 @@ class GameScene: SKScene {
       isUserInteractionAllowed = false  // Предотвращаем взаимодействие в начале игры
       sequence.removeAll()
       userSequence.removeAll()
-      
       level = 1  // Начинаем с первого уровня
-      score = 0  // Сброс счета
-      updateScoreLabel()  // Обновление отображения счета
-      
-      // Обновляем статус, сообщая о скором начале игры
-      updateStatusLabel(text: "Get ready...")
+      interfaceManager.score = 0  // Сброс счета через InterfaceManager
+      interfaceManager.updateStatusLabel(text: "Get ready...")
       
       // Добавляем задержку перед началом игры
       let delayAction = SKAction.wait(forDuration: 2.0)  // Пауза в 2 секунды
@@ -124,7 +90,7 @@ class GameScene: SKScene {
         guard let self = self else { return }
         self.generateSequence(length: 2 + self.level)  // Установка длины последовательности в зависимости от уровня
         self.showSequence()
-        self.updateStatusLabel(text: "Watch the sequence!")
+        self.interfaceManager.updateStatusLabel(text: "Watch the sequence!")
       }
       run(SKAction.sequence([delayAction, startSequenceAction]))
     }
@@ -137,10 +103,9 @@ class GameScene: SKScene {
     sequence.removeAll()
     userSequence.removeAll()
     removeAllActions()
-    score = 0
-    updateScoreLabel()  // Обновление отображения счета
+    interfaceManager.score = 0
     level = 1
-    updateStatusLabel(text: "Game Over! Press Begin to play again.")
+    interfaceManager.updateStatusLabel(text: "Game Over! Press Begin to play again.")
     print("Game has been stopped.")
   }
   
@@ -161,10 +126,10 @@ class GameScene: SKScene {
   // Обработка действий пользователя и обновление счёта
   func handleUserAction(correct: Bool) {
     if correct {
-      updateScore(by: 10) // Начисление очков за правильный ответ
+      interfaceManager.updateScore(by: 10) // Начисление очков за правильный ответ
     } else {
-      updateScore(by: -5) // Списание очков за ошибку
-      updateStatusLabel(text: "Wrong sequence! Try again.")
+      interfaceManager.updateScore(by: -5) // Списание очков за ошибку
+      interfaceManager.updateStatusLabel(text: "Wrong sequence! Try again.")
     }
   }
   
@@ -173,11 +138,9 @@ class GameScene: SKScene {
     if userSequence.count == sequence.count {
       if userSequence == sequence {
         print("User successfully completed the sequence")
-        updateStatusLabel(text: "Correct! Get ready for the next sequence...")
-        
-        updateScore(by: 10)  // Начисление очков за правильный ответ
+        interfaceManager.updateStatusLabel(text: "Correct! Get ready for the next sequence...")
+        interfaceManager.updateScore(by: 10)  // Начисление очков за правильный ответ
         level += 1  // Переход на следующий уровень
-        
         userSequence.removeAll()  // Очищаем последовательность пользователя для следующего раунда
         
         // Задержка перед генерацией новой последовательности
@@ -186,27 +149,26 @@ class GameScene: SKScene {
           guard let self = self else { return }
           self.generateSequence(length: 2 + self.level)  // Увеличиваем сложность последовательности
           self.showSequence()
-          self.updateStatusLabel(text: "Watch the sequence!")
+          self.interfaceManager.updateStatusLabel(text: "Watch the sequence!")
         }
         run(SKAction.sequence([delayAction, sequenceAction]))
       } else {
-        updateStatusLabel(text: "Incorrect! Try this level again: \(level)")
+        interfaceManager.updateStatusLabel(text: "Incorrect! Try this level again: \(level)")
         print("User made an error in the sequence")
-        updateScore(by: -5)  // Списание очков за ошибку
+        interfaceManager.updateScore(by: -5)  // Списание очков за ошибку
         
         if level > 1 {
           level -= 1  // Понижаем уровень, если это не первый уровень
         }
         
         userSequence.removeAll()  // Очищаем последовательность пользователя
-        
         // Задержка перед повторением того же уровня
         let delayAction = SKAction.wait(forDuration: 2.0)
         let sequenceAction = SKAction.run { [weak self] in
           guard let self = self else { return }
           self.generateSequence(length: 2 + self.level)  // Генерируем ту же сложность
           self.showSequence()
-          self.updateStatusLabel(text: "Try again! Watch the sequence!")
+          self.interfaceManager.updateStatusLabel(text: "Try again! Watch the sequence!")
         }
         run(SKAction.sequence([delayAction, sequenceAction]))
       }
@@ -225,7 +187,7 @@ class GameScene: SKScene {
   
   // Демонстрация сгенерированной последовательности с анимацией и звуком
   func showSequence() {
-    updateStatusLabel(text: "Watch the sequence!")
+    interfaceManager.updateStatusLabel(text: "Watch the sequence!")
     isUserInteractionAllowed = false  // Блокируем взаимодействие на время демонстрации
     userSequence.removeAll()  // Очищаем последовательность пользователя перед новым раундом
     var delay = 0.0
@@ -241,7 +203,7 @@ class GameScene: SKScene {
     }
     run(SKAction.wait(forDuration: delay)) { [weak self] in
       self?.isUserInteractionAllowed = true  // Разрешаем взаимодействие после паузы
-      self?.updateStatusLabel(text: "Your turn!")
+      self?.interfaceManager.updateStatusLabel(text: "Your turn!")
     }
   }
   
@@ -250,24 +212,6 @@ class GameScene: SKScene {
     generateSequence(length: 2 + level)  // 3 сигнала на первом уровне
     showSequence()
   }
-  
-  
-  // Изменяет счет на указанное количество очков.
-  func updateScore(by points: Int) {
-    score += points
-    scoreLabel.text = "Score: \(score)" // Обновление текста метки счета
-  }
-  
-  // Обновляет текстовую метку с текущим счетом.
-  func updateScoreLabel() {
-    scoreLabel.text = "Score: \(score)"
-  }
-  
-  // Обновляет текст статуса во время игры
-  func updateStatusLabel(text: String) {
-    statusLabel.text = text
-  }
-  
   
   // Обработка нажатий мыши
   override func mouseDown(with event: NSEvent) {
@@ -289,6 +233,4 @@ class GameScene: SKScene {
       }
     }
   }
-
 }
-
