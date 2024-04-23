@@ -14,6 +14,7 @@ class InterfaceManager {
     self.scene = scene
     setupScoreLabel()
     setupStatusLabel()
+    setupGameArea()
   }
   
   private func setupScoreLabel() {
@@ -34,6 +35,24 @@ class InterfaceManager {
     statusLabel.text = "Welcome to the Game!"
     scene?.addChild(statusLabel)
   }
+  
+  private func setupGameArea() {
+  let borderWidth: CGFloat = 1  // Тонкая рамка
+  let padding: CGFloat = 50  // Отступы от краев окна
+  
+  // Рассчитываем размеры рамки
+  let totalWidth: CGFloat = 330  // Ширина руками
+  let totalHeight = scene!.frame.height - padding * 2  // Высота рамки с учетом отступов
+  
+  let gameAreaRect = CGRect(x: scene!.frame.midX - totalWidth / 2, y: scene!.frame.midY - totalHeight / 2, width: totalWidth, height: totalHeight)
+  let gameArea = SKShapeNode(rect: gameAreaRect, cornerRadius: 20)
+  gameArea.strokeColor = SKColor.white
+  gameArea.lineWidth = borderWidth
+  gameArea.zPosition = -1  // Позиция за всеми другими элементами
+  scene?.addChild(gameArea)
+}
+  
+  
   
   // Изменяет счет на указанное количество очков.
   func updateScore(by points: Int) {
