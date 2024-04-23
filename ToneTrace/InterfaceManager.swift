@@ -4,6 +4,7 @@ class InterfaceManager {
   weak var scene: SKScene?  // Слабая ссылка, чтобы избежать циклических зависимостей
   var scoreLabel: SKLabelNode!
   var statusLabel: SKLabelNode!
+  var gameAreaRect: CGRect?  // Свойство для хранения размеров и позиции игровой области
   var score: Int = 0 {
     didSet {
       scoreLabel.text = "Score: \(score)"
@@ -12,18 +13,38 @@ class InterfaceManager {
   
   init(scene: SKScene) {
     self.scene = scene
+    setupGameArea()
     setupScoreLabel()
     setupStatusLabel()
-    setupGameArea()
   }
   
-  private func setupScoreLabel() {
+  // Настройка и инициализация зоны игры
+  private func setupGameArea() {
+    let borderWidth: CGFloat = 1
+    let padding: CGFloat = 50
+    let totalWidth: CGFloat = 330
+    let totalHeight = scene!.frame.height - padding * 2
+    
+    gameAreaRect = CGRect(x: scene!.frame.midX - totalWidth / 2, y: scene!.frame.midY - totalHeight / 2, width: totalWidth, height: totalHeight)
+    let gameArea = SKShapeNode(rect: gameAreaRect!, cornerRadius: 20)
+    gameArea.strokeColor = SKColor.white
+    gameArea.lineWidth = borderWidth
+    gameArea.zPosition = -1
+    scene?.addChild(gameArea)
+  }
+  
+  // Настройка и инициализация ScoreLabel
+  func setupScoreLabel() {
     scoreLabel = SKLabelNode(fontNamed: "Arial")
     scoreLabel.fontSize = 24
     scoreLabel.fontColor = SKColor.white
-    scoreLabel.position = CGPoint(x: scene!.frame.midX, y: scene!.frame.midY - 150)
     scoreLabel.text = "Score: \(score)"
-    scene?.addChild(scoreLabel)
+    let xOffset: CGFloat = 57  // Отступ от левой стороны
+    let yOffset: CGFloat = 10  // Отступ от верхней стороны
+    if let gameAreaRect = gameAreaRect {
+      scoreLabel.position = CGPoint(x: gameAreaRect.minX + xOffset, y: gameAreaRect.maxY - scoreLabel.frame.size.height - yOffset)
+    }
+    scene?.addChild(scoreLabel)  // Убедитесь, что добавление происходит после настройки всех параметров
   }
   
   // Настройка и инициализация statusLabel
@@ -35,23 +56,6 @@ class InterfaceManager {
     statusLabel.text = "Welcome to the Game!"
     scene?.addChild(statusLabel)
   }
-  
-  private func setupGameArea() {
-  let borderWidth: CGFloat = 1  // Тонкая рамка
-  let padding: CGFloat = 50  // Отступы от краев окна
-  
-  // Рассчитываем размеры рамки
-  let totalWidth: CGFloat = 330  // Ширина руками
-  let totalHeight = scene!.frame.height - padding * 2  // Высота рамки с учетом отступов
-  
-  let gameAreaRect = CGRect(x: scene!.frame.midX - totalWidth / 2, y: scene!.frame.midY - totalHeight / 2, width: totalWidth, height: totalHeight)
-  let gameArea = SKShapeNode(rect: gameAreaRect, cornerRadius: 20)
-  gameArea.strokeColor = SKColor.white
-  gameArea.lineWidth = borderWidth
-  gameArea.zPosition = -1  // Позиция за всеми другими элементами
-  scene?.addChild(gameArea)
-}
-  
   
   
   // Изменяет счет на указанное количество очков.
