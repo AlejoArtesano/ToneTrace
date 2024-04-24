@@ -3,6 +3,7 @@ import SpriteKit
 class InterfaceManager {
   weak var scene: SKScene?  // Слабая ссылка, чтобы избежать циклических зависимостей
   var scoreLabel: SKLabelNode!
+  var highScoreLabel: SKLabelNode!
   var statusLabel: SKLabelNode!
   var gameAreaRect: CGRect?  // Свойство для хранения размеров и позиции игровой области
   var score: Int = 0 {
@@ -10,11 +11,12 @@ class InterfaceManager {
       scoreLabel.text = "Score: \(score)"
     }
   }
-  
+    
   init(scene: SKScene) {
     self.scene = scene
     setupGameArea()
     setupScoreLabel()
+    setupHighScoreLabel()
     setupStatusLabel()
   }
   
@@ -36,7 +38,7 @@ class InterfaceManager {
   // Настройка и инициализация ScoreLabel
   func setupScoreLabel() {
     scoreLabel = SKLabelNode(fontNamed: "Arial")
-    scoreLabel.fontSize = 24
+    scoreLabel.fontSize = 22
     scoreLabel.fontColor = SKColor.white
     scoreLabel.text = "Score: \(score)"
     let xOffset: CGFloat = 57  // Отступ от левой стороны
@@ -44,8 +46,25 @@ class InterfaceManager {
     if let gameAreaRect = gameAreaRect {
       scoreLabel.position = CGPoint(x: gameAreaRect.minX + xOffset, y: gameAreaRect.maxY - scoreLabel.frame.size.height - yOffset)
     }
-    scene?.addChild(scoreLabel)  // Убедитесь, что добавление происходит после настройки всех параметров
+    scene?.addChild(scoreLabel)
   }
+  
+
+  // Настройка и инициализация HighScoreLabel
+  private func setupHighScoreLabel() {
+    highScoreLabel = SKLabelNode(fontNamed: "Arial")
+    highScoreLabel.fontSize = 22
+    highScoreLabel.fontColor = SKColor.white
+    highScoreLabel.text = "High: 00"
+    let xOffset: CGFloat = 273  // Отступ от левой стороны
+    let yOffset: CGFloat = 10  // Отступ от верхней стороны
+    if let gameAreaRect = gameAreaRect {
+      highScoreLabel.position = CGPoint(x: gameAreaRect.minX + xOffset, y: gameAreaRect.maxY - scoreLabel.frame.size.height - yOffset)
+    }
+    scene?.addChild(highScoreLabel)
+  }
+  
+  
   
   // Настройка и инициализация statusLabel
   func setupStatusLabel() {
