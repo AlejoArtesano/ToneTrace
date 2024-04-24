@@ -13,12 +13,10 @@
 		5B5A77EC2BD446C800DCF3E2 /* AudioManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B5A77EB2BD446C800DCF3E2 /* AudioManager.swift */; };
 		5B5A77F02BD508CA00DCF3E2 /* InterfaceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B5A77EF2BD508CA00DCF3E2 /* InterfaceManager.swift */; };
 		5B5A77F22BD52D0D00DCF3E2 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 5B5A77F12BD52D0D00DCF3E2 /* README.md */; };
+		5B5A77F42BD9935200DCF3E2 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B5A77F32BD9935200DCF3E2 /* main.swift */; };
 		5BBA72052BCD7943006B9466 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BBA72042BCD7943006B9466 /* AppDelegate.swift */; };
-		5BBA72072BCD7943006B9466 /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 5BBA72062BCD7943006B9466 /* GameScene.sks */; };
 		5BBA720B2BCD7943006B9466 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BBA720A2BCD7943006B9466 /* GameScene.swift */; };
-		5BBA720D2BCD7943006B9466 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BBA720C2BCD7943006B9466 /* ViewController.swift */; };
 		5BBA720F2BCD794A006B9466 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5BBA720E2BCD794A006B9466 /* Assets.xcassets */; };
-		5BBA72122BCD794A006B9466 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5BBA72102BCD794A006B9466 /* Main.storyboard */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,13 +26,11 @@
 		5B5A77EB2BD446C800DCF3E2 /* AudioManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioManager.swift; sourceTree = "<group>"; };
 		5B5A77EF2BD508CA00DCF3E2 /* InterfaceManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterfaceManager.swift; sourceTree = "<group>"; };
 		5B5A77F12BD52D0D00DCF3E2 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		5B5A77F32BD9935200DCF3E2 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		5BBA72012BCD7943006B9466 /* ToneTrace.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ToneTrace.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5BBA72042BCD7943006B9466 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		5BBA72062BCD7943006B9466 /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
 		5BBA720A2BCD7943006B9466 /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
-		5BBA720C2BCD7943006B9466 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		5BBA720E2BCD794A006B9466 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		5BBA72112BCD794A006B9466 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		5BBA72132BCD794A006B9466 /* ToneTrace.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ToneTrace.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -80,14 +76,12 @@
 			isa = PBXGroup;
 			children = (
 				5BBA72042BCD7943006B9466 /* AppDelegate.swift */,
-				5BBA72062BCD7943006B9466 /* GameScene.sks */,
+				5B5A77F32BD9935200DCF3E2 /* main.swift */,
 				5BBA720A2BCD7943006B9466 /* GameScene.swift */,
 				5B5A77EF2BD508CA00DCF3E2 /* InterfaceManager.swift */,
 				5B5A77EB2BD446C800DCF3E2 /* AudioManager.swift */,
-				5BBA720C2BCD7943006B9466 /* ViewController.swift */,
 				5B5A77DE2BD05B8300DCF3E2 /* Resources */,
 				5BBA720E2BCD794A006B9466 /* Assets.xcassets */,
-				5BBA72102BCD794A006B9466 /* Main.storyboard */,
 				5BBA72132BCD794A006B9466 /* ToneTrace.entitlements */,
 			);
 			path = ToneTrace;
@@ -152,10 +146,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				5B5A77EA2BD0FB1600DCF3E2 /* guitar_f2-low_F.m4a in Resources */,
-				5BBA72072BCD7943006B9466 /* GameScene.sks in Resources */,
 				5BBA720F2BCD794A006B9466 /* Assets.xcassets in Resources */,
 				5B5A77F22BD52D0D00DCF3E2 /* README.md in Resources */,
-				5BBA72122BCD794A006B9466 /* Main.storyboard in Resources */,
 				5B5A77E92BD0FB1600DCF3E2 /* guitar_a2_A.m4a in Resources */,
 				5B5A77E82BD0FB1600DCF3E2 /* guitar_b2_B.m4a in Resources */,
 			);
@@ -168,8 +160,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BBA720D2BCD7943006B9466 /* ViewController.swift in Sources */,
 				5BBA720B2BCD7943006B9466 /* GameScene.swift in Sources */,
+				5B5A77F42BD9935200DCF3E2 /* main.swift in Sources */,
 				5B5A77EC2BD446C800DCF3E2 /* AudioManager.swift in Sources */,
 				5BBA72052BCD7943006B9466 /* AppDelegate.swift in Sources */,
 				5B5A77F02BD508CA00DCF3E2 /* InterfaceManager.swift in Sources */,
@@ -177,17 +169,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXVariantGroup section */
-		5BBA72102BCD794A006B9466 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				5BBA72112BCD794A006B9466 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		5BBA72142BCD794A006B9466 /* Debug */ = {
@@ -315,8 +296,8 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.games";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				INFOPLIST_KEY_NSMainStoryboardFile = Main;
 				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -340,8 +321,8 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.games";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				INFOPLIST_KEY_NSMainStoryboardFile = Main;
 				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
