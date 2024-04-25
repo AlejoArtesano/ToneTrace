@@ -11,7 +11,12 @@ class InterfaceManager {
       scoreLabel.text = "Score: \(score)"
     }
   }
-    
+  var highScore: Int = 0 {
+    didSet {
+      highScoreLabel.text = "High: \(highScore)"
+    }
+  }
+  
   init(scene: SKScene) {
     self.scene = scene
     setupGameArea()
@@ -49,22 +54,20 @@ class InterfaceManager {
     scene?.addChild(scoreLabel)
   }
   
-
+  
   // Настройка и инициализация HighScoreLabel
   private func setupHighScoreLabel() {
     highScoreLabel = SKLabelNode(fontNamed: "Arial")
     highScoreLabel.fontSize = 22
     highScoreLabel.fontColor = SKColor.white
-    highScoreLabel.text = "High: 00"
     let xOffset: CGFloat = 273  // Отступ от левой стороны
     let yOffset: CGFloat = 10  // Отступ от верхней стороны
     if let gameAreaRect = gameAreaRect {
       highScoreLabel.position = CGPoint(x: gameAreaRect.minX + xOffset, y: gameAreaRect.maxY - scoreLabel.frame.size.height - yOffset)
     }
     scene?.addChild(highScoreLabel)
+    loadHighScore()
   }
-  
-  
   
   // Настройка и инициализация statusLabel
   func setupStatusLabel() {
@@ -75,7 +78,6 @@ class InterfaceManager {
     statusLabel.text = "Welcome to the Game!"
     scene?.addChild(statusLabel)
   }
-  
   
   // Изменяет счет на указанное количество очков.
   func updateScore(by points: Int) {
@@ -92,4 +94,18 @@ class InterfaceManager {
   func updateStatusLabel(text: String) {
     statusLabel.text = text
   }
+  
+  // Загружает рекордный счет из UserDefaults
+  func loadHighScore() {
+    highScore = UserDefaults.standard.integer(forKey: "highScore")
+  }
+  
+  // Обновляет и сохраняет рекордный счет, если текущий счет выше рекорда
+  func updateHighScore(score: Int) {
+    if score > highScore {
+      highScore = score
+      UserDefaults.standard.set(highScore, forKey: "highScore")
+    }
+  }
+  
 }

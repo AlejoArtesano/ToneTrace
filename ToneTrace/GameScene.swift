@@ -103,6 +103,8 @@ class GameScene: SKScene {
     sequence.removeAll()
     userSequence.removeAll()
     removeAllActions()
+    interfaceManager.updateHighScore(score: interfaceManager.score)
+    
     interfaceManager.score = 0
     level = 1
     interfaceManager.updateStatusLabel(text: "Game Over! Press Begin to play again.")
