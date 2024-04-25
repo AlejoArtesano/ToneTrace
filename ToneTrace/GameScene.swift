@@ -15,7 +15,7 @@ class GameScene: SKScene {
   var squares = [SKShapeNode]()
   var sequence = [Int]()
   var userSequence = [Int]()
-
+  
   // Инициализация игры, вызывается при первом показе сцены
   override func didMove(to view: SKView) {
     backgroundColor = SKColor.black
@@ -27,23 +27,48 @@ class GameScene: SKScene {
   
   // Настройка кнопок управления игрой
   func setupButtons() {
-    let startButton = SKLabelNode(fontNamed: "Arial")
-    startButton.text = "Begin"
-    startButton.fontSize = 24
-    startButton.fontColor = SKColor.green
+    let startButton = SKShapeNode(rectOf: CGSize(width: 100, height: 44), cornerRadius: 10)
+    startButton.fillColor = SKColor.lightGray
     startButton.position = CGPoint(x: frame.midX - 100, y: frame.midY - 150)
     startButton.name = "startButton"
+    
+    let startLabel = SKLabelNode(text: "Start")
+    startLabel.fontName = "Arial"
+    startLabel.fontSize = 20
+    startLabel.fontColor = SKColor.white
+    startLabel.verticalAlignmentMode = .center
+    startButton.addChild(startLabel)
+    //      let touchDownAction = SKAction.scale(to: 0.9, duration: 0.1)
+    //      let touchUpAction = SKAction.scale(to: 1.0, duration: 0.1)
+    
+    startButton.isUserInteractionEnabled = false // Управление через scene
+    // Обработчик нажатий через touchesBegan в GameScene
     addChild(startButton)
     
-    let endButton = SKLabelNode(fontNamed: "Arial")
-    endButton.text = "End"
-    endButton.fontSize = 24
-    endButton.fontColor = SKColor.red
+    
+    // Создаем спрайт для кнопки "End"
+    let endButton = SKShapeNode(rectOf: CGSize(width: 100, height: 44), cornerRadius: 10)
+    endButton.fillColor = SKColor.lightGray
     endButton.position = CGPoint(x: frame.midX + 100, y: frame.midY - 150)
     endButton.name = "endButton"
+    
+    let endLabel = SKLabelNode(text: "End")
+    endLabel.fontName = "Arial"
+    endLabel.fontSize = 20
+    endLabel.fontColor = SKColor.white
+    endLabel.verticalAlignmentMode = .center
+    endButton.addChild(endLabel)
+    //      let touchDownAction = SKAction.scale(to: 0.9, duration: 0.1)
+    //      let touchUpAction = SKAction.scale(to: 1.0, duration: 0.1)
+    
+    endButton.isUserInteractionEnabled = false // Управление через scene
+    // Обработчик нажатий через touchesBegan в GameScene
     addChild(endButton)
+    
   }
   
+  
+
   // Настройка визуальных элементов (квадратов) для игры
   func setupSquares() {
     let colors = [
@@ -124,7 +149,7 @@ class GameScene: SKScene {
       }
     }
   }
-
+  
   // Обработка действий пользователя и обновление счёта
   func handleUserAction(correct: Bool) {
     if correct {
@@ -215,6 +240,7 @@ class GameScene: SKScene {
     showSequence()
   }
   
+  
   // Обработка нажатий мыши
   override func mouseDown(with event: NSEvent) {
     let location = event.location(in: self)
@@ -223,16 +249,31 @@ class GameScene: SKScene {
     for node in nodes {
       if let nodeName = node.name {
         switch nodeName {
-          case "startButton":
-            if !isGameActive {
+          case "startButton", "endButton":
+            let scaleDownAction = SKAction.scale(to: 0.9, duration: 0.1)
+            node.run(scaleDownAction)
+            if nodeName == "startButton" && !isGameActive {
               startGame()
+            } else if nodeName == "endButton" {
+              endGame()
             }
-          case "endButton":
-            endGame()
           default:
             handleSquareInteraction(at: location)
         }
       }
     }
   }
+  
+  override func mouseUp(with event: NSEvent) {
+    let location = event.location(in: self)
+    let nodes = self.nodes(at: location)
+    
+    for node in nodes {
+      if let nodeName = node.name, nodeName == "startButton" || nodeName == "endButton" {
+        let scaleUpAction = SKAction.scale(to: 1.0, duration: 0.1)
+        node.run(scaleUpAction)
+      }
+    }
+  }
+  
 }
