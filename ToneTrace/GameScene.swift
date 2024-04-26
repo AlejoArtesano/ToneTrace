@@ -25,58 +25,55 @@ class GameScene: SKScene {
     setupButtons()
   }
   
+  private func createButton(withTitle title: String, position: CGPoint, name: String) -> SKShapeNode {
+    let button = SKShapeNode(rectOf: CGSize(width: 100, height: 44), cornerRadius: 10)
+    button.fillColor = SKColor.lightGray
+    button.position = position
+    button.name = name
+    
+    let label = SKLabelNode(text: title)
+    label.fontName = "Arial"
+    label.fontSize = 20
+    label.fontColor = SKColor.white
+    label.verticalAlignmentMode = .center
+    button.addChild(label)
+    return button
+  }
+
   // Настройка кнопок управления игрой
   func setupButtons() {
-    // Создаем спрайт для кнопки "Start"
-    let startButton = SKShapeNode(rectOf: CGSize(width: 100, height: 44), cornerRadius: 10)
-    startButton.fillColor = SKColor.lightGray
-    startButton.position = CGPoint(x: frame.midX - 100, y: frame.midY - 150)
-    startButton.name = "startButton"
-    
-    let startLabel = SKLabelNode(text: "Start")
-    startLabel.fontName = "Arial"
-    startLabel.fontSize = 20
-    startLabel.fontColor = SKColor.white
-    startLabel.verticalAlignmentMode = .center
-    startButton.addChild(startLabel)
-    startButton.isUserInteractionEnabled = false // Управление через scene
+    let startButton = createButton(withTitle: "Start", position: CGPoint(x: frame.midX - 100, y: frame.midY - 150), name: "startButton")
     addChild(startButton)
     
-    // Создаем спрайт для кнопки "End"
-    let endButton = SKShapeNode(rectOf: CGSize(width: 100, height: 44), cornerRadius: 10)
-    endButton.fillColor = SKColor.lightGray
-    endButton.position = CGPoint(x: frame.midX + 100, y: frame.midY - 150)
-    endButton.name = "endButton"
-    
-    let endLabel = SKLabelNode(text: "End")
-    endLabel.fontName = "Arial"
-    endLabel.fontSize = 20
-    endLabel.fontColor = SKColor.white
-    endLabel.verticalAlignmentMode = .center
-    endButton.addChild(endLabel)
-    endButton.isUserInteractionEnabled = false // Управление через scene
+    let endButton = createButton(withTitle: "End", position: CGPoint(x: frame.midX + 100, y: frame.midY - 150), name: "endButton")
     addChild(endButton)
+  }
+
+  
+  private func createSquare(color: SKColor, size: CGSize, position: CGPoint, name: String) -> SKShapeNode {
+    let square = SKShapeNode(rectOf: size, cornerRadius: 12)
+    square.fillColor = color
+    square.position = position
+    square.name = name
+    return square
   }
   
   // Настройка визуальных элементов (квадратов) для игры
   func setupSquares() {
     let colors = [
-      SKColor(red: 1, green: 0.5, blue: 0.5, alpha: 1), // более светлый красный
-      SKColor(red: 1, green: 1, blue: 0.5, alpha: 1), // более светлый желтый
+      SKColor(red: 1, green: 0.5, blue: 0.5, alpha: 1),  // более светлый красный
+      SKColor(red: 1, green: 1, blue: 0.5, alpha: 1),  // более светлый желтый
       SKColor(red: 0.5, green: 1, blue: 0.5, alpha: 1) // более светлый зеленый
     ]
     let squareSize = CGSize(width: 80, height: 80)
-    
-    for i in 0..<3 {
-      let square = SKShapeNode(rectOf: squareSize, cornerRadius: 12) // Увеличенные скругленные углы
-      square.fillColor = colors[i]
-      square.position = CGPoint(x: frame.midX + CGFloat(i * 100) - 100, y: frame.midY) // Расширение расстояния между квадратами
-      square.name = "square\(i)"
+    for (index, color) in colors.enumerated() {
+      let position = CGPoint(x: frame.midX + CGFloat(index * 100) - 100, y: frame.midY)
+      let square = createSquare(color: color, size: squareSize, position: position, name: "square\(index)")
       squares.append(square)
       addChild(square)
     }
   }
-  
+
   // Подсветка квадрата при активации
   func highlightSquare(at index: Int) {
     let highlightAction = SKAction.sequence([
