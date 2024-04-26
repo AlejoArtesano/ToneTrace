@@ -1,5 +1,18 @@
 import SpriteKit
 
+weak var scene: SKScene?
+
+// Константы для настройки интерфейса
+private struct Constants {
+  static let labelFontSize: CGFloat = 22
+  static let labelFontColor = SKColor.white
+  static let scoreLabelXOffset: CGFloat = 57
+  static let scoreLabelYOffset: CGFloat = 25
+  static let highScoreLabelXOffset: CGFloat = 273
+  static let highScoreLabelYOffset: CGFloat = 25
+}
+
+
 class InterfaceManager {
   weak var scene: SKScene?  // Слабая ссылка, чтобы избежать циклических зависимостей
   var scoreLabel: SKLabelNode!
@@ -40,34 +53,39 @@ class InterfaceManager {
     scene?.addChild(gameArea)
   }
   
+  
   // Настройка и инициализация ScoreLabel
   func setupScoreLabel() {
-    scoreLabel = SKLabelNode(fontNamed: "Arial")
-    scoreLabel.fontSize = 22
-    scoreLabel.fontColor = SKColor.white
-    scoreLabel.text = "Score: \(score)"
-    let xOffset: CGFloat = 57  // Отступ от левой стороны
-    let yOffset: CGFloat = 10  // Отступ от верхней стороны
-    if let gameAreaRect = gameAreaRect {
-      scoreLabel.position = CGPoint(x: gameAreaRect.minX + xOffset, y: gameAreaRect.maxY - scoreLabel.frame.size.height - yOffset)
-    }
+    let position = CGPoint(
+      x: gameAreaRect!.minX + Constants.scoreLabelXOffset,
+      y: gameAreaRect!.maxY - Constants.scoreLabelYOffset
+    )
+    scoreLabel = createLabelNode(text: "Score: \(score)", fontSize: Constants.labelFontSize, fontColor: Constants.labelFontColor, position: position)
     scene?.addChild(scoreLabel)
   }
   
-  
   // Настройка и инициализация HighScoreLabel
-  private func setupHighScoreLabel() {
-    highScoreLabel = SKLabelNode(fontNamed: "Arial")
-    highScoreLabel.fontSize = 22
-    highScoreLabel.fontColor = SKColor.white
-    let xOffset: CGFloat = 273  // Отступ от левой стороны
-    let yOffset: CGFloat = 10  // Отступ от верхней стороны
-    if let gameAreaRect = gameAreaRect {
-      highScoreLabel.position = CGPoint(x: gameAreaRect.minX + xOffset, y: gameAreaRect.maxY - scoreLabel.frame.size.height - yOffset)
-    }
+  func setupHighScoreLabel() {
+    let position = CGPoint(
+      x: gameAreaRect!.minX + Constants.highScoreLabelXOffset,
+      y: gameAreaRect!.maxY - Constants.highScoreLabelYOffset
+    )
+    highScoreLabel = createLabelNode(text: "High: \(highScore)", fontSize: Constants.labelFontSize, fontColor: Constants.labelFontColor, position: position)
     scene?.addChild(highScoreLabel)
     loadHighScore()
   }
+  
+  
+  // Метод для создания меток
+  private func createLabelNode(text: String, fontSize: CGFloat, fontColor: SKColor, position: CGPoint) -> SKLabelNode {
+    let label = SKLabelNode(fontNamed: "Arial")
+    label.fontSize = fontSize
+    label.fontColor = fontColor
+    label.text = text
+    label.position = position
+    return label
+  }
+  
   
   // Настройка и инициализация statusLabel
   func setupStatusLabel() {
