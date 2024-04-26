@@ -229,38 +229,38 @@ class GameScene: SKScene {
     showSequence()
   }
   
+  
+  // Обрабатывает действия для кнопок в игре.
+  func handleButtonAction(named nodeName: String) {
+    if nodeName == "startButton" {
+      startGame()
+    } else if nodeName == "endButton" {
+      endGame()
+    }
+  }
+  
   // Обработка нажатий мыши
   override func mouseDown(with event: NSEvent) {
     let location = event.location(in: self)
     let nodes = self.nodes(at: location)
     
-    for node in nodes {
-      if let nodeName = node.name {
-        switch nodeName {
-          case "startButton", "endButton":
-            let scaleDownAction = SKAction.scale(to: 0.9, duration: 0.1)
-            node.run(scaleDownAction)
-            if nodeName == "startButton" && !isGameActive {
-              startGame()
-            } else if nodeName == "endButton" {
-              endGame()
-            }
-          default:
-            handleSquareInteraction(at: location)
-        }
-      }
+    // Обработка нажатий на кнопки
+    for node in nodes where node.name == "startButton" || node.name == "endButton" {
+      node.run(SKAction.scale(to: 0.9, duration: 0.1))
+      handleButtonAction(named: node.name!)
     }
+    
+    // Обработка нажатий на квадраты
+    handleSquareInteraction(at: location)
   }
   
   override func mouseUp(with event: NSEvent) {
     let location = event.location(in: self)
     let nodes = self.nodes(at: location)
     
-    for node in nodes {
-      if let nodeName = node.name, nodeName == "startButton" || nodeName == "endButton" {
-        let scaleUpAction = SKAction.scale(to: 1.0, duration: 0.1)
-        node.run(scaleUpAction)
-      }
+    // Обработка отпускания кнопок
+    for node in nodes where node.name == "startButton" || node.name == "endButton" {
+      node.run(SKAction.scale(to: 1.0, duration: 0.1))
     }
   }
   
