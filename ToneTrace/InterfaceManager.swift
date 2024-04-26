@@ -10,8 +10,10 @@ private struct Constants {
   static let scoreLabelYOffset: CGFloat = 25
   static let highScoreLabelXOffset: CGFloat = 273
   static let highScoreLabelYOffset: CGFloat = 25
+  static let statusLabelFontSize: CGFloat = 24
+  static let statusLabelYOffset: CGFloat = 100
+  static let gameAreaBorderWidth: CGFloat = 1
 }
-
 
 class InterfaceManager {
   weak var scene: SKScene?  // Слабая ссылка, чтобы избежать циклических зависимостей
@@ -38,29 +40,38 @@ class InterfaceManager {
     setupStatusLabel()
   }
   
-  // Настройка и инициализация зоны игры
-  private func setupGameArea() {
-    let borderWidth: CGFloat = 1
+  
+  // Определение геометрии игровой зоны
+  private func configureGameAreaGeometry() -> CGRect {
+    //    let borderWidth: CGFloat = 1
     let padding: CGFloat = 50
     let totalWidth: CGFloat = 330
     let totalHeight = scene!.frame.height - padding * 2
     
-    gameAreaRect = CGRect(x: scene!.frame.midX - totalWidth / 2, y: scene!.frame.midY - totalHeight / 2, width: totalWidth, height: totalHeight)
+    return CGRect(x: scene!.frame.midX - totalWidth / 2, y: scene!.frame.midY - totalHeight / 2, width: totalWidth, height: totalHeight)
+  }
+  
+  // Настройка и инициализация зоны игры
+  private func setupGameArea() {
+    gameAreaRect = configureGameAreaGeometry()
     let gameArea = SKShapeNode(rect: gameAreaRect!, cornerRadius: 20)
     gameArea.strokeColor = SKColor.white
-    gameArea.lineWidth = borderWidth
+    gameArea.lineWidth = Constants.gameAreaBorderWidth
     gameArea.zPosition = -1
     scene?.addChild(gameArea)
   }
-  
-  
+
   // Настройка и инициализация ScoreLabel
   func setupScoreLabel() {
     let position = CGPoint(
       x: gameAreaRect!.minX + Constants.scoreLabelXOffset,
       y: gameAreaRect!.maxY - Constants.scoreLabelYOffset
     )
-    scoreLabel = createLabelNode(text: "Score: \(score)", fontSize: Constants.labelFontSize, fontColor: Constants.labelFontColor, position: position)
+    scoreLabel = createLabelNode(text: "Score: \(score)",
+                                 fontSize: Constants.labelFontSize,
+                                 fontColor: Constants.labelFontColor,
+                                 position: position)
+    
     scene?.addChild(scoreLabel)
   }
   
@@ -70,11 +81,14 @@ class InterfaceManager {
       x: gameAreaRect!.minX + Constants.highScoreLabelXOffset,
       y: gameAreaRect!.maxY - Constants.highScoreLabelYOffset
     )
-    highScoreLabel = createLabelNode(text: "High: \(highScore)", fontSize: Constants.labelFontSize, fontColor: Constants.labelFontColor, position: position)
+    highScoreLabel = createLabelNode(text: "High: \(highScore)",
+                                     fontSize: Constants.labelFontSize,
+                                     fontColor: Constants.labelFontColor,
+                                     position: position)
+    
     scene?.addChild(highScoreLabel)
     loadHighScore()
   }
-  
   
   // Метод для создания меток
   private func createLabelNode(text: String, fontSize: CGFloat, fontColor: SKColor, position: CGPoint) -> SKLabelNode {
@@ -86,21 +100,20 @@ class InterfaceManager {
     return label
   }
   
-  
   // Настройка и инициализация statusLabel
   func setupStatusLabel() {
-    statusLabel = SKLabelNode(fontNamed: "Arial")
-    statusLabel.fontSize = 24
-    statusLabel.fontColor = SKColor.white
-    statusLabel.position = CGPoint(x: scene!.frame.midX, y: scene!.frame.midY + 100)
-    statusLabel.text = "Welcome to the Game!"
+    let position = CGPoint(x: scene!.frame.midX, y: scene!.frame.midY + Constants.statusLabelYOffset)
+    statusLabel = createLabelNode(text: "Welcome to the Game!",
+                                  fontSize: Constants.statusLabelFontSize,
+                                  fontColor: Constants.labelFontColor,
+                                  position: position)
+    
     scene?.addChild(statusLabel)
   }
   
   // Изменяет счет на указанное количество очков.
   func updateScore(by points: Int) {
     score += points
-    //    scoreLabel.text = "Score: \(score)" // Обновление текста метки счета
   }
   
   // Обновляет текстовую метку с текущим счетом.
