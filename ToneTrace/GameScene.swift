@@ -27,6 +27,7 @@ class GameScene: SKScene {
   
   // Настройка кнопок управления игрой
   func setupButtons() {
+    // Создаем спрайт для кнопки "Start"
     let startButton = SKShapeNode(rectOf: CGSize(width: 100, height: 44), cornerRadius: 10)
     startButton.fillColor = SKColor.lightGray
     startButton.position = CGPoint(x: frame.midX - 100, y: frame.midY - 150)
@@ -38,13 +39,8 @@ class GameScene: SKScene {
     startLabel.fontColor = SKColor.white
     startLabel.verticalAlignmentMode = .center
     startButton.addChild(startLabel)
-    //      let touchDownAction = SKAction.scale(to: 0.9, duration: 0.1)
-    //      let touchUpAction = SKAction.scale(to: 1.0, duration: 0.1)
-    
     startButton.isUserInteractionEnabled = false // Управление через scene
-    // Обработчик нажатий через touchesBegan в GameScene
     addChild(startButton)
-    
     
     // Создаем спрайт для кнопки "End"
     let endButton = SKShapeNode(rectOf: CGSize(width: 100, height: 44), cornerRadius: 10)
@@ -58,17 +54,10 @@ class GameScene: SKScene {
     endLabel.fontColor = SKColor.white
     endLabel.verticalAlignmentMode = .center
     endButton.addChild(endLabel)
-    //      let touchDownAction = SKAction.scale(to: 0.9, duration: 0.1)
-    //      let touchUpAction = SKAction.scale(to: 1.0, duration: 0.1)
-    
     endButton.isUserInteractionEnabled = false // Управление через scene
-    // Обработчик нажатий через touchesBegan в GameScene
     addChild(endButton)
-    
   }
   
-  
-
   // Настройка визуальных элементов (квадратов) для игры
   func setupSquares() {
     let colors = [
@@ -98,43 +87,43 @@ class GameScene: SKScene {
     squares[index].run(highlightAction)
   }
   
-  // Запуск игры
-  func startGame() {
-    if !isGameActive {
-      isGameActive = true
-      isUserInteractionAllowed = false  // Предотвращаем взаимодействие в начале игры
-      sequence.removeAll()
-      userSequence.removeAll()
-      level = 1  // Начинаем с первого уровня
-      interfaceManager.score = 0  // Сброс счета через InterfaceManager
-      interfaceManager.updateStatusLabel(text: "Get ready...")
-      
-      // Добавляем задержку перед началом игры
-      let delayAction = SKAction.wait(forDuration: 2.0)  // Пауза в 2 секунды
-      let startSequenceAction = SKAction.run { [weak self] in
-        guard let self = self else { return }
-        self.generateSequence(length: 2 + self.level)  // Установка длины последовательности в зависимости от уровня
-        self.showSequence()
-        self.interfaceManager.updateStatusLabel(text: "Watch the sequence!")
-      }
-      run(SKAction.sequence([delayAction, startSequenceAction]))
-    }
-  }
   
-  // Окончание игры
-  func endGame() {
+  func resetGame() {
     isGameActive = false
     isUserInteractionAllowed = false
     sequence.removeAll()
     userSequence.removeAll()
-    removeAllActions()
-    interfaceManager.updateHighScore(score: interfaceManager.score)
-    
-    interfaceManager.score = 0
+    interfaceManager.score = 0  // Сброс счета
     level = 1
+  }
+  
+  // Запуск игры
+  func startGame() {
+    resetGame()
+    isGameActive = true
+    interfaceManager.updateStatusLabel(text: "Get ready...")
+    prepareForNewSequence()
+  }
+  
+  // Подготавливает и начинает новую последовательность в игре после задержки.
+  func prepareForNewSequence() {
+    let delayAction = SKAction.wait(forDuration: 2.0)
+    let startSequenceAction = SKAction.run { [weak self] in
+      guard let self = self else { return }
+      self.generateSequence(length: 2 + self.level)
+      self.showSequence()
+    }
+    run(SKAction.sequence([delayAction, startSequenceAction]))
+  }
+  
+  // Окончание игры
+  func endGame() {
+    resetGame()
+    interfaceManager.updateHighScore(score: interfaceManager.score)
     interfaceManager.updateStatusLabel(text: "Game Over! Press Begin to play again.")
     print("Game has been stopped.")
   }
+
   
   // Обработка взаимодействия с квадратами
   func handleSquareInteraction(at location: CGPoint) {
@@ -239,7 +228,6 @@ class GameScene: SKScene {
     generateSequence(length: 2 + level)  // 3 сигнала на первом уровне
     showSequence()
   }
-  
   
   // Обработка нажатий мыши
   override func mouseDown(with event: NSEvent) {
