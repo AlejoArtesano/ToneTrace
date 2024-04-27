@@ -18,13 +18,19 @@ class GameScene: SKScene {
   
   // Инициализация игры, вызывается при первом показе сцены
   override func didMove(to view: SKView) {
+    setupScene()
+  }
+  
+  // Настраивает начальные элементы сцены при первом показе.
+  private func setupScene() {
     backgroundColor = SKColor.black
     audioManager.setupAudioPlayers()
-    interfaceManager = InterfaceManager(scene: self)  // Создаем InterfaceManager и передаем текущую сцену
+    interfaceManager = InterfaceManager(scene: self)
     setupSquares()
     setupButtons()
   }
   
+  // Создает кнопку для управления игрой
   private func createButton(withTitle title: String, position: CGPoint, name: String) -> SKShapeNode {
     let button = SKShapeNode(rectOf: CGSize(width: 100, height: 44), cornerRadius: 10)
     button.fillColor = SKColor.lightGray
@@ -39,7 +45,7 @@ class GameScene: SKScene {
     button.addChild(label)
     return button
   }
-
+  
   // Настройка кнопок управления игрой
   func setupButtons() {
     let startButton = createButton(withTitle: "Start", position: CGPoint(x: frame.midX - 100, y: frame.midY - 150), name: "startButton")
@@ -48,8 +54,8 @@ class GameScene: SKScene {
     let endButton = createButton(withTitle: "End", position: CGPoint(x: frame.midX + 100, y: frame.midY - 150), name: "endButton")
     addChild(endButton)
   }
-
   
+  // Создает визуальный элемент игры в виде квадрата.
   private func createSquare(color: SKColor, size: CGSize, position: CGPoint, name: String) -> SKShapeNode {
     let square = SKShapeNode(rectOf: size, cornerRadius: 12)
     square.fillColor = color
@@ -73,7 +79,7 @@ class GameScene: SKScene {
       addChild(square)
     }
   }
-
+  
   // Подсветка квадрата при активации
   func highlightSquare(at index: Int) {
     let highlightAction = SKAction.sequence([
@@ -84,7 +90,7 @@ class GameScene: SKScene {
     squares[index].run(highlightAction)
   }
   
-  
+  // Сброс игры
   func resetGame() {
     isGameActive = false
     isUserInteractionAllowed = false
@@ -120,18 +126,16 @@ class GameScene: SKScene {
     interfaceManager.updateStatusLabel(text: "Game Over! Press Begin to play again.")
     print("Game has been stopped.")
   }
-
+  
   
   // Обработка взаимодействия с квадратами
-  func handleSquareInteraction(at location: CGPoint) {
-    if isGameActive && isUserInteractionAllowed && userSequence.count < sequence.count {
-      for (index, square) in squares.enumerated() {
-        if square.frame.contains(location) {
-          highlightSquare(at: index)
-          userSequence.append(index)
-          audioManager.playSoundForSquare(index: index)
-          checkCompletion()
-        }
+  private func handleSquareInteraction(node: SKNode, at location: CGPoint, isMouseDown: Bool) {
+    if isMouseDown && isUserInteractionAllowed {
+      if let nodeName = node.name, let squareIndex = Int(nodeName.filter { "0"..."9" ~= $0 }) {
+        highlightSquare(at: squareIndex) // Подсветка квадрата при активации
+        userSequence.append(squareIndex) // Добавление номера квадрата в последовательность пользователя
+        audioManager.playSoundForSquare(index: squareIndex) // Воспроизведение звука
+        checkCompletion() // Проверка завершения ввода последовательности
       }
     }
   }
@@ -222,7 +226,7 @@ class GameScene: SKScene {
   
   // Генерирует и демонстрирует новую последовательность игры
   func generateAndShowSequence() {
-    generateSequence(length: 2 + level)  // 3 сигнала на первом уровне
+    generateSequence(length: 2 + level)
     showSequence()
   }
   
@@ -239,25 +243,35 @@ class GameScene: SKScene {
   // Обработка нажатий мыши
   override func mouseDown(with event: NSEvent) {
     let location = event.location(in: self)
-    let nodes = self.nodes(at: location)
-    
-    // Обработка нажатий на кнопки
-    for node in nodes where node.name == "startButton" || node.name == "endButton" {
-      node.run(SKAction.scale(to: 0.9, duration: 0.1))
-      handleButtonAction(named: node.name!)
-    }
-    
-    // Обработка нажатий на квадраты
-    handleSquareInteraction(at: location)
+    processInput(at: location, with: event, isMouseDown: true)
   }
   
+  // Обработка отпускания кнопки мыши
   override func mouseUp(with event: NSEvent) {
     let location = event.location(in: self)
+    processInput(at: location, with: event, isMouseDown: false)
+  }
+  
+  // Общий метод для обработки входных событий, чтобы избежать дублирования кода
+  private func processInput(at location: CGPoint, with event: NSEvent, isMouseDown: Bool) {
     let nodes = self.nodes(at: location)
     
-    // Обработка отпускания кнопок
-    for node in nodes where node.name == "startButton" || node.name == "endButton" {
-      node.run(SKAction.scale(to: 1.0, duration: 0.1))
+    for node in nodes {
+      if let nodeName = node.name, nodeName == "startButton" || nodeName == "endButton" {
+        handleButtonInteraction(node: node, isMouseDown: isMouseDown)
+      } else if node.name?.starts(with: "square") == true {
+        handleSquareInteraction(node: node, at: location, isMouseDown: isMouseDown)
+      }
+    }
+  }
+  
+  // Обрабатывает взаимодействия с кнопками
+  private func handleButtonInteraction(node: SKNode, isMouseDown: Bool) {
+    if isMouseDown {
+      node.run(SKAction.scale(to: 0.9, duration: 0.1)) // Анимация нажатия кнопки
+      handleButtonAction(named: node.name!) // Вызывает действие, связанное с кнопкой
+    } else {
+      node.run(SKAction.scale(to: 1.0, duration: 0.1)) // Анимация отпускания кнопки
     }
   }
   
