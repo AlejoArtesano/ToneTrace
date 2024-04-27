@@ -1,19 +1,15 @@
 import AVFoundation
 
 class AudioManager {
-  // Аудио плееры для воспроизведения звуков
-  var audioPlayer1: AVAudioPlayer?
-  var audioPlayer2: AVAudioPlayer?
-  var audioPlayer3: AVAudioPlayer?
+  var audioPlayers = [AVAudioPlayer?](repeating: nil, count: 3)
+  let soundFileNames = ["guitar_a2_A.m4a", "guitar_b2_B.m4a", "guitar_f2-low_F.m4a"]
   
-  // Создание и настройка аудио плееров для воспроизведения звуков
   func setupAudioPlayers() {
-    audioPlayer1 = createAudioPlayer(fileName: "guitar_a2_A.m4a")
-    audioPlayer2 = createAudioPlayer(fileName: "guitar_b2_B.m4a")
-    audioPlayer3 = createAudioPlayer(fileName: "guitar_f2-low_F.m4a")
+    for (index, fileName) in soundFileNames.enumerated() {
+      audioPlayers[index] = createAudioPlayer(fileName: fileName)
+    }
   }
   
-  // Создание аудио плеера из файла
   private func createAudioPlayer(fileName: String) -> AVAudioPlayer? {
     guard let url = Bundle.main.url(forResource: fileName, withExtension: nil) else {
       print("Failed to find the file \(fileName)")
@@ -29,29 +25,15 @@ class AudioManager {
     }
   }
   
-  // Воспроизведение звука для квадрата
   func playSoundForSquare(index: Int) {
-    let player: AVAudioPlayer?
-    switch index {
-      case 0:
-        player = audioPlayer1
-      case 1:
-        player = audioPlayer2
-      case 2:
-        player = audioPlayer3
-      default:
-        print("No audio player available for index \(index)")
-        return
-    }
-    if let player = player {
-      if player.isPlaying {
-        player.stop()
-      }
-      player.currentTime = 0
-      player.play()
-      print("Playing sound for index \(index)")
-    } else {
+    guard let player = audioPlayers[index] else {
       print("Audio player not initialized for index \(index)")
+      return
     }
+    if player.isPlaying {
+      player.stop()
+    }
+    player.currentTime = 0
+    player.play()
   }
 }
