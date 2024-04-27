@@ -5,6 +5,7 @@ import AVFoundation
 class GameScene: SKScene {
   var audioManager = AudioManager()
   var interfaceManager: InterfaceManager!
+  var stateManager: GameStateManager!
   
   // Флаги состояния игры
   var isGameActive = false
@@ -19,6 +20,7 @@ class GameScene: SKScene {
   // Инициализация игры, вызывается при первом показе сцены
   override func didMove(to view: SKView) {
     setupScene()
+    stateManager = GameStateManager(gameScene: self)
   }
   
   // Настраивает начальные элементы сцены при первом показе.
@@ -90,24 +92,6 @@ class GameScene: SKScene {
     squares[index].run(highlightAction)
   }
   
-  // Сброс игры
-  func resetGame() {
-    isGameActive = false
-    isUserInteractionAllowed = false
-    sequence.removeAll()
-    userSequence.removeAll()
-    interfaceManager.score = 0  // Сброс счета
-    level = 1
-  }
-  
-  // Запуск игры
-  func startGame() {
-    resetGame()
-    isGameActive = true
-    interfaceManager.updateStatusLabel(text: "Get ready...")
-    prepareForNewSequence()
-  }
-  
   // Подготавливает и начинает новую последовательность в игре после задержки.
   func prepareForNewSequence() {
     let delayAction = SKAction.wait(forDuration: 2.0)
@@ -118,16 +102,7 @@ class GameScene: SKScene {
     }
     run(SKAction.sequence([delayAction, startSequenceAction]))
   }
-  
-  // Окончание игры
-  func endGame() {
-    resetGame()
-    interfaceManager.updateHighScore(score: interfaceManager.score)
-    interfaceManager.updateStatusLabel(text: "Game Over! Press Begin to play again.")
-    print("Game has been stopped.")
-  }
-  
-  
+    
   // Обработка взаимодействия с квадратами
   private func handleSquareInteraction(node: SKNode, at location: CGPoint, isMouseDown: Bool) {
     if isMouseDown && isUserInteractionAllowed {
@@ -230,13 +205,15 @@ class GameScene: SKScene {
     showSequence()
   }
   
-  
   // Обрабатывает действия для кнопок в игре.
   func handleButtonAction(named nodeName: String) {
-    if nodeName == "startButton" {
-      startGame()
-    } else if nodeName == "endButton" {
-      endGame()
+    switch nodeName {
+      case "startButton":
+        stateManager.startGame()  // Управление через GameStateManager
+      case "endButton":
+        stateManager.endGame()    // Управление через GameStateManager
+      default:
+        break
     }
   }
   

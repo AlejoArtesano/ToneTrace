@@ -14,6 +14,7 @@
 		5B5A77F02BD508CA00DCF3E2 /* InterfaceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B5A77EF2BD508CA00DCF3E2 /* InterfaceManager.swift */; };
 		5B5A77F22BD52D0D00DCF3E2 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 5B5A77F12BD52D0D00DCF3E2 /* README.md */; };
 		5B5A77F42BD9935200DCF3E2 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B5A77F32BD9935200DCF3E2 /* main.swift */; };
+		5B5A77FC2BDD918100DCF3E2 /* GameStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B5A77FB2BDD918100DCF3E2 /* GameStateManager.swift */; };
 		5BBA72052BCD7943006B9466 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BBA72042BCD7943006B9466 /* AppDelegate.swift */; };
 		5BBA720B2BCD7943006B9466 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BBA720A2BCD7943006B9466 /* GameScene.swift */; };
 		5BBA720F2BCD794A006B9466 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5BBA720E2BCD794A006B9466 /* Assets.xcassets */; };
@@ -27,6 +28,7 @@
 		5B5A77EF2BD508CA00DCF3E2 /* InterfaceManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterfaceManager.swift; sourceTree = "<group>"; };
 		5B5A77F12BD52D0D00DCF3E2 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		5B5A77F32BD9935200DCF3E2 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		5B5A77FB2BDD918100DCF3E2 /* GameStateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameStateManager.swift; sourceTree = "<group>"; };
 		5BBA72012BCD7943006B9466 /* ToneTrace.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ToneTrace.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5BBA72042BCD7943006B9466 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		5BBA720A2BCD7943006B9466 /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
@@ -78,6 +80,7 @@
 				5BBA72042BCD7943006B9466 /* AppDelegate.swift */,
 				5B5A77F32BD9935200DCF3E2 /* main.swift */,
 				5BBA720A2BCD7943006B9466 /* GameScene.swift */,
+				5B5A77FB2BDD918100DCF3E2 /* GameStateManager.swift */,
 				5B5A77EF2BD508CA00DCF3E2 /* InterfaceManager.swift */,
 				5B5A77EB2BD446C800DCF3E2 /* AudioManager.swift */,
 				5B5A77DE2BD05B8300DCF3E2 /* Resources */,
@@ -161,6 +164,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5BBA720B2BCD7943006B9466 /* GameScene.swift in Sources */,
+				5B5A77FC2BDD918100DCF3E2 /* GameStateManager.swift in Sources */,
 				5B5A77F42BD9935200DCF3E2 /* main.swift in Sources */,
 				5B5A77EC2BD446C800DCF3E2 /* AudioManager.swift in Sources */,
 				5BBA72052BCD7943006B9466 /* AppDelegate.swift in Sources */,
