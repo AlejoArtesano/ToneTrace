@@ -13,14 +13,18 @@ private struct Constants {
   static let statusLabelFontSize: CGFloat = 24
   static let statusLabelYOffset: CGFloat = 100
   static let gameAreaBorderWidth: CGFloat = 1
+  static let padding: CGFloat = 50
+  static let totalWidth: CGFloat = 330
+  static let cornerRadius: CGFloat = 20
 }
 
 class InterfaceManager {
-  weak var scene: SKScene?  // Слабая ссылка, чтобы избежать циклических зависимостей
+  weak var scene: SKScene?
   var scoreLabel: SKLabelNode!
   var highScoreLabel: SKLabelNode!
   var statusLabel: SKLabelNode!
-  var gameAreaRect: CGRect?  // Свойство для хранения размеров и позиции игровой области
+  var gameAreaRect: CGRect?
+  
   var score: Int = 0 {
     didSet {
       scoreLabel.text = "Score: \(score)"
@@ -40,38 +44,29 @@ class InterfaceManager {
     setupStatusLabel()
   }
   
-  
   // Определение геометрии игровой зоны
   private func configureGameAreaGeometry() -> CGRect {
-    //    let borderWidth: CGFloat = 1
-    let padding: CGFloat = 50
-    let totalWidth: CGFloat = 330
-    let totalHeight = scene!.frame.height - padding * 2
-    
-    return CGRect(x: scene!.frame.midX - totalWidth / 2, y: scene!.frame.midY - totalHeight / 2, width: totalWidth, height: totalHeight)
+    let totalHeight = scene!.frame.height - Constants.padding * 2
+    return CGRect(x: scene!.frame.midX - Constants.totalWidth / 2, y: scene!.frame.midY - totalHeight / 2, width: Constants.totalWidth, height: totalHeight)
   }
   
   // Настройка и инициализация зоны игры
   private func setupGameArea() {
     gameAreaRect = configureGameAreaGeometry()
-    let gameArea = SKShapeNode(rect: gameAreaRect!, cornerRadius: 20)
-    gameArea.strokeColor = SKColor.white
+    let gameArea = SKShapeNode(rect: gameAreaRect!, cornerRadius: Constants.cornerRadius)
+    gameArea.strokeColor = Constants.labelFontColor
     gameArea.lineWidth = Constants.gameAreaBorderWidth
     gameArea.zPosition = -1
     scene?.addChild(gameArea)
   }
-
+  
   // Настройка и инициализация ScoreLabel
   func setupScoreLabel() {
     let position = CGPoint(
       x: gameAreaRect!.minX + Constants.scoreLabelXOffset,
       y: gameAreaRect!.maxY - Constants.scoreLabelYOffset
     )
-    scoreLabel = createLabelNode(text: "Score: \(score)",
-                                 fontSize: Constants.labelFontSize,
-                                 fontColor: Constants.labelFontColor,
-                                 position: position)
-    
+    scoreLabel = createLabelNode(text: "Score: \(score)", fontSize: Constants.labelFontSize, fontColor: Constants.labelFontColor, position: position)
     scene?.addChild(scoreLabel)
   }
   
@@ -81,11 +76,7 @@ class InterfaceManager {
       x: gameAreaRect!.minX + Constants.highScoreLabelXOffset,
       y: gameAreaRect!.maxY - Constants.highScoreLabelYOffset
     )
-    highScoreLabel = createLabelNode(text: "High: \(highScore)",
-                                     fontSize: Constants.labelFontSize,
-                                     fontColor: Constants.labelFontColor,
-                                     position: position)
-    
+    highScoreLabel = createLabelNode(text: "High: \(highScore)", fontSize: Constants.labelFontSize, fontColor: Constants.labelFontColor, position: position)
     scene?.addChild(highScoreLabel)
     loadHighScore()
   }
@@ -103,20 +94,16 @@ class InterfaceManager {
   // Настройка и инициализация statusLabel
   func setupStatusLabel() {
     let position = CGPoint(x: scene!.frame.midX, y: scene!.frame.midY + Constants.statusLabelYOffset)
-    statusLabel = createLabelNode(text: "Welcome to the Game!",
-                                  fontSize: Constants.statusLabelFontSize,
-                                  fontColor: Constants.labelFontColor,
-                                  position: position)
-    
+    statusLabel = createLabelNode(text: "Welcome to the Game!", fontSize: Constants.statusLabelFontSize, fontColor: Constants.labelFontColor, position: position)
     scene?.addChild(statusLabel)
   }
   
-  // Изменяет счет на указанное количество очков.
+  // Изменяет счет на указанное количество очков
   func updateScore(by points: Int) {
     score += points
   }
   
-  // Обновляет текстовую метку с текущим счетом.
+  // Обновляет текстовую метку с текущим счетом
   func updateScoreLabel() {
     scoreLabel.text = "Score: \(score)"
   }
@@ -138,5 +125,4 @@ class InterfaceManager {
       UserDefaults.standard.set(highScore, forKey: "highScore")
     }
   }
-  
 }
